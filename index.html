@@ -1,0 +1,115 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>Index</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+    <!--[if IE]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+
+    <div class="jumbotron text-center">
+        <h1>Cotizador de envíos</h1>
+    </div>
+
+    <div class="container">
+        <h1>Datos de la cotizaci&oacute;n</h1>
+
+        <form id="quotation">
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="product">Producto</label>
+                    <select class="form-control" name="products" id="products" required="true">
+                        <option value="" selected disabled hidden>Seleccionar un producto...</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="postalCode">C&oacute;digo postal</label>
+                    <input type="number" class="form-control" name="postalCode" id="postalCode"
+                        placeholder="C&oacute;digo postal" min="0" max="99999" required="true">
+                </div>
+            </div>
+
+            <div class="form-row justify-content-end">
+                <div id="col">
+                    <input type="submit" class="btn btn-primary " value="Realizar cotizaci&oacute;n">
+                </div>
+            </div>
+        </form>
+
+        <div class="row" id="result">
+
+        </div>
+    </div>
+    <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        const itemsPath = './data/datos.json';
+
+        const productsElement = document.querySelector('#products');
+        const quotationElement = document.querySelector('#quotation');
+        const resultElement = document.querySelector('#result');
+
+        fetch(itemsPath)
+            .then(response => response.json())
+            .then(items => {
+                items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.textContent = item['producto'];
+                    productsElement.appendChild(option);
+                });
+            });
+
+        quotationElement.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(quotationElement);
+
+            console.log(formData);
+
+            showQuotationDetails(1, 1);
+        });
+
+        function showQuotationDetails(idProduct, postalCode) {
+            fetch(itemsPath)
+                .then(response => response.json())
+                .then(items => {
+                    const result = document.createElement('h1');
+                    result.textContent = 'Ni idea men, unos 500?';
+
+                    resultElement.innerHTML = '';
+                    resultElement.appendChild(result);
+                });
+            // Item data
+            const name = 'Coyota';
+            const price = 100;      // MXN Currency
+            const volume = 1;       // centimeters squared
+            const weight = 250;     // grams
+
+            const distance = 300;   // kilometers
+        }
+    </script>
+</body>
+
+</html>
