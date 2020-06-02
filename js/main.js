@@ -1,5 +1,22 @@
 const itemsPath = './data/datos.json';
 
+//Design of index
+$(document).ready(function(){
+	$('ul.tabs li a:first').addClass('active');
+	$('.secciones article').hide();
+	$('.secciones article:first').show();
+
+	$('ul.tabs li a').click(function(){
+		$('ul.tabs li a').removeClass('active');
+		$(this).addClass('active');
+		$('.secciones article').hide();
+
+		var activeTab = $(this).attr('href');
+		$(activeTab).show();
+		return false;
+	});
+});
+
 const productsElement = document.querySelector('#products');
 const quotationElement = document.querySelector('#quotation');
 const resultElement = document.querySelector('#result');
@@ -41,4 +58,6 @@ function showQuotationDetails(idProduct, postalCode) {
     const weight = 250;     // grams
 
     const distance = 300;   // kilometers
+
+
 }
