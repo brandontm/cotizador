@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Index</title>
+    <title>Cotizador</title>
 
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,9 +14,11 @@
 
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/main.css">
-
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <meta name="theme-color" content="#fafafa">
 </head>
@@ -29,33 +31,141 @@
     <div class="jumbotron text-center">
         <h1>Cotizador de envíos</h1>
     </div>
-    <div class="container">
-    <table>
-        <tbody>
-            <tr>
-                <td>
-                    <a >
-                    <image width="150" height="150" src= "helados.jpg"/><br>
-                    </a>
-                    <div align="center">
-                        <label>Helados</label>
-                    </div>
-                    
-                </td>
-                <td>
-                    <a>               
-                    <image width="150" height="150" src= "nuevoElemento.png"/><br>
-                    </a> 
-                    <div align="center" >
-                        <label>Nueva Categoria</label>
-                    </div>
-                   
-                
-                </td>
-            </tr>         
-        </tbody>
-    </table>
-</div>
+    <div class="wrap">
+        <ul class="tabs">
+            <li><a href="#tab1"><span class="tab-text">Frituras</span></a></li>
+            <li><a href="#tab2"><span class="tab-text">Helados</span></a></li>
+            <li><a href="#tab3"><span class="tab-text">Comida</span></a></li>
+            <li><a href="#tab4"><span class="tab-text">Mariscos</span></a></li>
+        </ul>
+
+        <div class="secciones">
+            <article id="tab1">
+                <p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                 <a title="helados" href="helados.jsp">
+                                        <image alt="helados "  width="150" height="150" src= "helados.jpg"/>
+                                 </a>
+                                 <br>
+                                <div align="center">
+                                    <label>Coyota</label>
+                               </div>
+
+                            </td>
+                            <td>
+                               <form>
+
+                                <image width="150" height="150" src= "nuevoElemento.png"/>
+                                <br>
+                                <div align="center" >
+                                    <label>Nueva Producto</label>
+                                </div>
+
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
+            </article>
+            <article id="tab2">
+                <p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                 <a title="helados" href="helados.jsp">
+                                        <image alt="helados "  width="150" height="150" src= "helados.jpg"/>
+                                 </a>
+                                 <br>
+                                    <div align="center">
+                                    <label>Helado de pistache</label>
+                                </div>
+
+                            </td>
+                            <td>
+                               <form>
+
+                                <image width="150" height="150" src= "nuevoElemento.png"/>
+                                   <br>
+                                <div align="center" >
+                                    <label>Nueva Producto</label>
+                                </div>
+
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
+            </article>
+            <article id="tab3">
+                <p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                 <a title="helados" href="helados.jsp">
+                                        <image alt="helados "  width="150" height="150" src= "helados.jpg"/>
+                                 </a>
+                                 <br>
+                                    <div  align="center">
+                                    <label>Cajeta Envinada</label>
+                                    </div>
+
+                            </td>
+                            <td>
+                               <form>
+
+                                <image width="150" height="150" src= "nuevoElemento.png"/>
+                                  <br>
+                                <div align="center" >
+                                    <label>Nueva Producto</label>
+                                </div>
+
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
+            </article>
+            <article id="tab4">
+                <p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                 <a title="helados" href="helados.jsp">
+                                        <image alt="helados "  width="150" height="150" src= "helados.jpg"/>
+                                 </a>
+                                 <br>
+                                    <div align="center">
+                                    <label>Helados</label>
+                                </div>
+
+                            </td>
+                            <td>
+                               <form>
+
+                                <image width="150" height="150" src= "nuevoElemento.png"/>
+                                  <br>
+                                <div align="center" >
+                                    <label>Nueva Producto</label>
+                                </div>
+
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
+            </article>
+        </div>
+    </div>
  <!--   <div class="container">
         <h1>Datos de la cotizaci&oacute;n</h1>
 
@@ -92,12 +202,11 @@
 
 
 
-
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="js/vendor/modernizr-3.11.2.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
-
-    <script src="js/main.js"></script>
+    <script type="text/javascript" src="data/datos.json"></script>
 </body>
 
 </html>
