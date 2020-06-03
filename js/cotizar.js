@@ -1,10 +1,8 @@
 let db;
-//const API_URL = 'https://itacate.herokuapp.com/api/v1';
-const API_URL = 'http://localhost:3000/api/v1'; // TODO: Change to production URL
+const API_URL = 'https://itacate.herokuapp.com/api/v1';
 
 window.onload = function () {
     this.loadDatabase();
-
 }
 
 function showQuotationProducts() {
@@ -55,8 +53,6 @@ function showQuotationProducts() {
                     const cardQuantityValues = document.createElement('div');
                     cardQuantityValues.classList.add('dropdown-menu');
 
-                    cardQuantityValues.labelledBy = 'productQuantityDropdownButton';
-
                     [...Array(20).keys()].forEach((number) => {
                         const value = number + 1;
                         const cardQuantValue = document.createElement('a');
@@ -103,15 +99,14 @@ function showQuotationProducts() {
                     div.appendChild(card);
 
                     productList.appendChild(div);
-
-                    console.log(`${product.id} FINISHED`);
-
-
                     //#endregion
-                });
+                })
+                .catch(() => {
+                    const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+                    errorModalBody.textContent = 'Hubo un error al obtener los productos de la cotización. Favor de intentar de nuevo.';
+                    $('#errorModal').modal('show');
+                })
 
-
-            console.log(`CONTINUE, id ${cursor.value.product_id}`);
             cursor.continue();
         }
     }
@@ -121,7 +116,9 @@ function loadDatabase() {
     const request = window.indexedDB.open('cart_db', 1);
 
     request.onerror = () => {
-        // TODO: Error handling
+        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+        errorModalBody.textContent = 'Hubo un error interno de la aplicación. Favor de intentar de nuevo.';
+        $('#errorModal').modal('show');
     }
 
     request.onsuccess = () => {
@@ -135,7 +132,7 @@ function loadDatabase() {
         db = event.target.result;
 
         // Create object store (table)
-        let objectStore = db.createObjectStore('product', { keyPath: 'product_id' });
+        const objectStore = db.createObjectStore('product', { keyPath: 'product_id' });
         objectStore.createIndex('quantity', 'quantity', { unique: false });
     };
 }
@@ -154,14 +151,13 @@ function putQuotationProduct(productId, productQuantity) {
     };
 
     transaction.oncomplete = () => {
-        console.log('Transaction completed: database modification finished.');
-
         this.showQuotationProducts();
     };
 
     transaction.onerror = () => {
-        // TODO: Error handling ?
-        console.log('Transaction not opened due to error');
+        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+        errorModalBody.textContent = 'Hubo un error al insertar producto a la cotización. Favor de intentar de nuevo.';
+        $('#errorModal').modal('show');
     };
 }
 
@@ -172,27 +168,13 @@ function removeProductFromQuotation(productId) {
 
     const request = objectStore.delete(productId);
 
-    request.onsuccess = () => {
-
-    };
-
     transaction.oncomplete = () => {
-        console.log('Transaction completed: database modification finished.');
-
         this.showQuotationProducts();
     };
 
     transaction.onerror = () => {
-        // TODO: Error handling ?
-        console.log('Transaction not opened due to error');
+        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+        errorModalBody.textContent = 'Hubo un error al intentar eliminar un producto de la cotización. Favor de intentar de nuevo.';
+        $('#errorModal').modal('show');
     };
-}
-
-function getQuotationProduct(productId) {
-    return new Promise((resolve, reject) => {
-        const objectStore = db.transaction('product').objectStore('product');
-        const request = objectStore.get(productId);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
 }
