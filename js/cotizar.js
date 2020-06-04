@@ -6,110 +6,32 @@ window.onload = function () {
 }
 
 function showQuotationProducts() {
-    const transaction = db.transaction('product');
-    const objectStore = transaction.objectStore('product');
-
     const productList = document.querySelector('#result');
     productList.innerHTML = ''; // clean product list
 
-    objectStore.openCursor().onsuccess = (event) => {
-        let cursor = event.target.result;
+    const transaction = db.transaction('product');
+    const objectStore = transaction.objectStore('product');
 
-        if (cursor) {
-            const quantity = cursor.value.quantity;
+    const request = objectStore.getAll();
 
-            fetch(`${API_URL}/product/${cursor.value.product_id}`)
-                .then(response => response.json())
-                .then((product) => {
-                    //#region show product card
-                    const div = document.createElement('div');
-                    div.classList.add('col-sm-4', 'col-lg-3', 'py-2');
+    request.onsuccess = (event) => {
+        const registries = new Map();
 
-                    const card = document.createElement('div');
-                    card.classList.add('card', 'mb-4', 'h-100');
+        const fetchData = async () => {
+            const ids = event.target.result.map((results) => {
+                registries.set(results.product_id, results.quantity);
 
-                    const img = document.createElement('img');
-                    img.classList.add('card-img-top');
-                    img.src = product.image_url || 'https://cdn.onlinewebfonts.com/svg/img_148071.png';
+                return results.product_id;
+            }).join(';')
 
-                    const cardBody = document.createElement('div');
-                    cardBody.classList.add('card-body');
+            const response = await fetch(`${API_URL}/products/${ids}`);
+            const results = await response.json();
 
-                    const cardTitle = document.createElement('h6');
-                    cardTitle.classList.add('card-text');
 
-                    const cardQuantityDropdown = document.createElement('div');
-                    cardQuantityDropdown.classList.add('dropdown');
-
-                    const cardQuantity = document.createElement('button');
-                    cardQuantity.classList.add('btn', 'btn-secondary', 'dropdown-toggle', 'float-right');
-                    cardQuantity.type = 'button';
-                    cardQuantity.id = 'productQuantityDropdownButton';
-                    cardQuantity.dataset.toggle = 'dropdown';
-                    cardQuantity.ariaHasPopup = 'true';
-                    cardQuantity.ariaExpanded = 'false';
-                    cardQuantity.textContent = quantity;
-
-                    const cardQuantityValues = document.createElement('div');
-                    cardQuantityValues.classList.add('dropdown-menu');
-
-                    [...Array(20).keys()].forEach((number) => {
-                        const value = number + 1;
-                        const cardQuantValue = document.createElement('a');
-                        cardQuantValue.classList.add('dropdown-item');
-
-                        cardQuantValue.onclick = () => {
-                            this.putQuotationProduct(product.id, Number(cardQuantValue.textContent));
-                        };
-
-                        if (value === quantity)
-                            cardQuantValue.classList.add('active');
-
-                        cardQuantValue.href = '#';
-                        cardQuantValue.textContent = value;
-
-                        cardQuantityValues.appendChild(cardQuantValue);
-                    });
-
-                    const cardFooter = document.createElement('div');
-                    cardFooter.classList.add('card-footer');
-
-                    const removeProductButton = document.createElement('button');
-                    removeProductButton.classList.add('btn', 'btn-link', 'float-left');
-                    removeProductButton.textContent = 'Eliminar';
-                    removeProductButton.onclick = () => {
-                        this.removeProductFromQuotation(product.id);
-                    };
-
-                    cardQuantityDropdown.appendChild(cardQuantity);
-                    cardQuantityDropdown.appendChild(cardQuantityValues);
-
-                    cardTitle.textContent = `${product.title}`;
-
-                    cardBody.appendChild(cardTitle);
-
-                    cardFooter.appendChild(removeProductButton);
-                    cardFooter.appendChild(cardQuantityDropdown);
-
-                    // card.appendChild(img);
-                    // card.append(document.createElement('hr')); // add separator
-                    card.appendChild(cardBody);
-                    card.appendChild(cardFooter);
-
-                    div.appendChild(card);
-
-                    productList.appendChild(div);
-                    //#endregion
-                })
-                .catch(() => {
-                    const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
-                    errorModalBody.textContent = 'Hubo un error al obtener los productos de la cotización. Favor de intentar de nuevo.';
-                    $('#errorModal').modal('show');
-                })
-
-            cursor.continue();
+            results.forEach((product) => this.showProductCard(product, registries.get(product.id)));
         }
-    }
+        fetchData();
+    };
 }
 
 function loadDatabase() {
@@ -177,4 +99,86 @@ function removeProductFromQuotation(productId) {
         errorModalBody.textContent = 'Hubo un error al intentar eliminar un producto de la cotización. Favor de intentar de nuevo.';
         $('#errorModal').modal('show');
     };
+}
+
+function showProductCard(product, quantity) {
+    const productList = document.querySelector('#result');
+
+    const div = document.createElement('div');
+    div.classList.add('col-sm-4', 'col-lg-3', 'py-2');
+
+    const card = document.createElement('div');
+    card.classList.add('card', 'mb-4', 'h-100');
+
+    const img = document.createElement('img');
+    img.classList.add('card-img-top');
+    img.src = product.image_url || 'https://cdn.onlinewebfonts.com/svg/img_148071.png';
+
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
+
+    const cardTitle = document.createElement('h6');
+    cardTitle.classList.add('card-text');
+
+    const cardQuantityDropdown = document.createElement('div');
+    cardQuantityDropdown.classList.add('dropdown');
+
+    const cardQuantity = document.createElement('button');
+    cardQuantity.classList.add('btn', 'btn-secondary', 'dropdown-toggle', 'float-right');
+    cardQuantity.type = 'button';
+    cardQuantity.id = 'productQuantityDropdownButton';
+    cardQuantity.dataset.toggle = 'dropdown';
+    cardQuantity.ariaHasPopup = 'true';
+    cardQuantity.ariaExpanded = 'false';
+    cardQuantity.textContent = quantity;
+
+    const cardQuantityValues = document.createElement('div');
+    cardQuantityValues.classList.add('dropdown-menu');
+
+    [...Array(20).keys()].forEach((number) => {
+        const value = number + 1;
+        const cardQuantValue = document.createElement('a');
+        cardQuantValue.classList.add('dropdown-item');
+
+        cardQuantValue.onclick = () => {
+            this.putQuotationProduct(product.id, Number(cardQuantValue.textContent));
+        };
+
+        if (value === quantity)
+            cardQuantValue.classList.add('active');
+
+        cardQuantValue.href = '#';
+        cardQuantValue.textContent = value;
+
+        cardQuantityValues.appendChild(cardQuantValue);
+    });
+
+    const cardFooter = document.createElement('div');
+    cardFooter.classList.add('card-footer');
+
+    const removeProductButton = document.createElement('button');
+    removeProductButton.classList.add('btn', 'btn-link', 'float-left');
+    removeProductButton.textContent = 'Eliminar';
+    removeProductButton.onclick = () => {
+        this.removeProductFromQuotation(product.id);
+    };
+
+    cardQuantityDropdown.appendChild(cardQuantity);
+    cardQuantityDropdown.appendChild(cardQuantityValues);
+
+    cardTitle.textContent = `${product.title}`;
+
+    cardBody.appendChild(cardTitle);
+
+    cardFooter.appendChild(removeProductButton);
+    cardFooter.appendChild(cardQuantityDropdown);
+
+    // card.appendChild(img);
+    // card.append(document.createElement('hr')); // add separator
+    card.appendChild(cardBody);
+    card.appendChild(cardFooter);
+
+    div.appendChild(card);
+
+    productList.appendChild(div);
 }
