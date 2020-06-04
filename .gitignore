@@ -7,3 +7,5 @@
 !.gitignore
 !.editorconfig
 !.phpcs.xml.dist
+
+.vscode/
