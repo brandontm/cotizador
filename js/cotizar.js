@@ -5,9 +5,41 @@ window.onload = function () {
     this.loadDatabase();
 }
 
+function loadDatabase() {
+    this.showLoading();
+
+    const request = window.indexedDB.open('cart_db', 1);
+
+    request.onerror = () => {
+        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+        errorModalBody.textContent = 'Hubo un error interno de la aplicación. Favor de intentar de nuevo.';
+        $('#errorModal').modal('show');
+
+        hideLoading();
+    }
+
+    request.onsuccess = () => {
+        db = request.result;
+
+        showQuotationProducts();
+    }
+
+    request.onupgradeneeded = (event) => {
+        // Get opened database
+        db = event.target.result;
+
+        // Create object store (table)
+        const objectStore = db.createObjectStore('product', { keyPath: 'product_id' });
+        objectStore.createIndex('quantity', 'quantity', { unique: false });
+
+        showQuotationProducts();
+    };
+}
+
 function showQuotationProducts() {
+    this.showLoading();
+
     const productList = document.querySelector('#result');
-    productList.innerHTML = ''; // clean product list
 
     const transaction = db.transaction('product');
     const objectStore = transaction.objectStore('product');
@@ -18,6 +50,8 @@ function showQuotationProducts() {
         const registries = new Map();
 
         const fetchData = async () => {
+            productList.innerHTML = ''; // clean product list
+
             const ids = event.target.result.map((results) => {
                 registries.set(results.product_id, results.quantity);
 
@@ -27,35 +61,31 @@ function showQuotationProducts() {
             const response = await fetch(`${API_URL}/products/${ids}`);
             const results = await response.json();
 
-
-            results.forEach((product) => this.showProductCard(product, registries.get(product.id)));
+            if (ids && results.length > 0) {
+                return results;
+            } else {
+                return null;
+            }
         }
-        fetchData();
-    };
-}
+        fetchData()
+            .then((products) => {
+                hideLoading();
 
-function loadDatabase() {
-    const request = window.indexedDB.open('cart_db', 1);
+                if (products) {
+                    productList.innerHTML = ''; // clean product list
+                    products.forEach((product) => showProductCard(product, registries.get(product.id)));
+                } else {
+                    const noProductsFound = document.querySelector('#result > #noProductsFound');
+                    noProductsFound.hidden = false;
+                }
+            })
+            .catch(() => {
+                const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+                errorModalBody.textContent = 'Hubo un error obteniendo productos. Favor de intentar de nuevo.';
+                $('#errorModal').modal('show');
 
-    request.onerror = () => {
-        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
-        errorModalBody.textContent = 'Hubo un error interno de la aplicación. Favor de intentar de nuevo.';
-        $('#errorModal').modal('show');
-    }
-
-    request.onsuccess = () => {
-        db = request.result;
-
-        this.showQuotationProducts();
-    }
-
-    request.onupgradeneeded = (event) => {
-        // Get opened database
-        db = event.target.result;
-
-        // Create object store (table)
-        const objectStore = db.createObjectStore('product', { keyPath: 'product_id' });
-        objectStore.createIndex('quantity', 'quantity', { unique: false });
+                hideLoading();
+            });
     };
 }
 
@@ -68,12 +98,8 @@ function putQuotationProduct(productId, productQuantity) {
 
     const request = objectStore.put(newItem);
 
-    request.onsuccess = () => {
-
-    };
-
     transaction.oncomplete = () => {
-        this.showQuotationProducts();
+        showQuotationProducts();
     };
 
     transaction.onerror = () => {
@@ -91,7 +117,7 @@ function removeProductFromQuotation(productId) {
     const request = objectStore.delete(productId);
 
     transaction.oncomplete = () => {
-        this.showQuotationProducts();
+        showQuotationProducts();
     };
 
     transaction.onerror = () => {
@@ -99,6 +125,19 @@ function removeProductFromQuotation(productId) {
         errorModalBody.textContent = 'Hubo un error al intentar eliminar un producto de la cotización. Favor de intentar de nuevo.';
         $('#errorModal').modal('show');
     };
+}
+
+function showLoading() {
+    const loadingSpinner = document.querySelector('#loading');
+    loadingSpinner.hidden = false;
+    loadingSpinner.classList.add('d-flex');
+}
+
+
+function hideLoading() {
+    const loadingSpinner = document.querySelector('#loading');
+    loadingSpinner.classList.remove('d-flex');
+    loadingSpinner.hidden = true;
 }
 
 function showProductCard(product, quantity) {

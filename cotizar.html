@@ -25,7 +25,18 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
     <![endif]-->
     <div class="container">
-        <div id="result" class="row">
+        <div class="justify-content-center py-5" id="loading" hidden>
+            <div class="spinner-border" style="width: 8rem; height: 8rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div class="col justify-content-center" id="noProductsFound" hidden>
+            <div class="alert alert-warning my-5" role="alert">
+                <p>No se encontraron productos en la cotización.&nbsp;<a href="index.html">Volver al
+                        cat&aacute;logo</a></p>
+            </div>
+        </div>
+        <div class="row" id="result">
 
         </div>
     </div>
