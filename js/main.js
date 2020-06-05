@@ -88,7 +88,43 @@ function showQuotationProducts() {
             });
     };
 }
+function putQuotationProduct(productId, productQuantity) {
+    const newItem = { 'product_id': productId, 'quantity': productQuantity };
 
+    const transaction = db.transaction(['product'], 'readwrite');
+
+    const objectStore = transaction.objectStore('product');
+
+    const request = objectStore.put(newItem);
+
+    transaction.oncomplete = () => {
+        showQuotationProducts();
+    };
+
+    transaction.onerror = () => {
+        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+        errorModalBody.textContent = 'Hubo un error al insertar producto a la cotización. Favor de intentar de nuevo.';
+        $('#errorModal').modal('show');
+    };
+}
+
+function removeProductFromQuotation(productId) {
+    const transaction = db.transaction(['product'], 'readwrite');
+
+    const objectStore = transaction.objectStore('product');
+
+    const request = objectStore.delete(productId);
+
+    transaction.oncomplete = () => {
+        showQuotationProducts();
+    };
+
+    transaction.onerror = () => {
+        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+        errorModalBody.textContent = 'Hubo un error al intentar eliminar un producto de la cotización. Favor de intentar de nuevo.';
+        $('#errorModal').modal('show');
+    };
+}
 function showProductCard(product, quantity) {
     const productList = document.querySelector('#result');
 
