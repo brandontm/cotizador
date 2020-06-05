@@ -21,12 +21,6 @@ function loadDatabase() {
     request.onsuccess = () => {
         db = request.result;
 
-        this.putQuotationProduct(1, 1);
-        this.putQuotationProduct(2, 1);
-        this.putQuotationProduct(10, 10);
-        this.putQuotationProduct(20, 20);
-        this.putQuotationProduct(4, 2);
-
         showQuotationProducts();
     }
 
@@ -56,26 +50,34 @@ function showQuotationProducts() {
         const registries = new Map();
 
         const fetchData = async () => {
+            productList.innerHTML = ''; // clean product list
+
             const ids = event.target.result.map((results) => {
                 registries.set(results.product_id, results.quantity);
 
                 return results.product_id;
             }).join(';')
 
-            if (ids) {
-                const response = await fetch(`${API_URL}/prosducts/${ids}`);
-                const results = await response.json();
+            const response = await fetch(`${API_URL}/products/${ids}`);
+            const results = await response.json();
 
-
-                productList.innerHTML = ''; // clean product list
-                results.forEach((product) => showProductCard(product, registries.get(product.id)));
+            if (ids && results.length > 0) {
+                return results;
             } else {
-
+                return null;
             }
         }
         fetchData()
-            .then(() => {
+            .then((products) => {
                 hideLoading();
+
+                if (products) {
+                    productList.innerHTML = ''; // clean product list
+                    products.forEach((product) => showProductCard(product, registries.get(product.id)));
+                } else {
+                    const noProductsFound = document.querySelector('#result > #noProductsFound');
+                    noProductsFound.hidden = false;
+                }
             })
             .catch(() => {
                 const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
