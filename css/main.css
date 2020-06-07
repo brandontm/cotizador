@@ -11,6 +11,7 @@
    Base styles: opinionated defaults
    ========================================================================== */
 
+
 /*
  * Remove text-shadow in selection highlight:
  * https://twitter.com/miketaylr/status/12228805301
@@ -29,19 +30,6 @@
 ::selection {
     background: #b3d4fc;
     text-shadow: none;
-}
-
-/*
- * A better looking default horizontal rule
- */
-
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
 }
 
 /*

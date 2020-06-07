@@ -32,7 +32,7 @@ function loadDatabase() {
         const objectStore = db.createObjectStore('product', { keyPath: 'product_id' });
         objectStore.createIndex('quantity', 'quantity', { unique: false });
 
-        showQuotationProducts();
+        // TODO: show products
     };
 }
 
@@ -72,8 +72,22 @@ function showQuotationProducts() {
                 hideLoading();
 
                 if (products) {
+                    let weight = 0;
+                    let volume = 0;
+
                     productList.innerHTML = ''; // clean product list
-                    products.forEach((product) => showProductCard(product, registries.get(product.id)));
+
+                    products.forEach((product) => {
+                        volumePerUnit = (product.length * product.width + product.height);
+                        const quantity = registries.get(product.id);
+
+                        weight += ((product.weight * quantity) / 1000.0);
+                        volume += (volumePerUnit * quantity);
+                        showProductCard(product, quantity)
+                    });
+
+                    productsWeight.value = Math.round(weight * 10000) / 10000;
+                    productsVolume.value = Math.round(volume * 10000) / 10000;
                 } else {
                     const noProductsFound = document.querySelector('#result > #noProductsFound');
                     noProductsFound.hidden = false;
@@ -133,7 +147,6 @@ function showLoading() {
     loadingSpinner.classList.add('d-flex');
 }
 
-
 function hideLoading() {
     const loadingSpinner = document.querySelector('#loading');
     loadingSpinner.classList.remove('d-flex');
@@ -147,11 +160,12 @@ function showProductCard(product, quantity) {
     div.classList.add('col-sm-4', 'col-lg-3', 'py-2');
 
     const card = document.createElement('div');
-    card.classList.add('card', 'mb-4', 'h-100');
+    card.classList.add('card', 'mb-4');
+    card.style.minWidth = '10rem';
 
-    const img = document.createElement('img');
-    img.classList.add('card-img-top');
-    img.src = product.image_url || 'https://cdn.onlinewebfonts.com/svg/img_148071.png';
+    // const img = document.createElement('img');
+    // img.classList.add('card-img-top');
+    // img.src = product.image_url || 'https://cdn.onlinewebfonts.com/svg/img_148071.png';
 
     const cardBody = document.createElement('div');
     cardBody.classList.add('card-body');
@@ -159,11 +173,21 @@ function showProductCard(product, quantity) {
     const cardTitle = document.createElement('h6');
     cardTitle.classList.add('card-text');
 
+    const cardFooter = document.createElement('div');
+    cardFooter.classList.add('card-footer', 'd-flex', 'justify-content-between', 'px-1');
+
+    const removeProductButton = document.createElement('button');
+    removeProductButton.classList.add('btn', 'btn-link');
+    removeProductButton.textContent = 'Eliminar';
+    removeProductButton.onclick = () => {
+        this.removeProductFromQuotation(product.id);
+    };
+
     const cardQuantityDropdown = document.createElement('div');
     cardQuantityDropdown.classList.add('dropdown');
 
     const cardQuantity = document.createElement('button');
-    cardQuantity.classList.add('btn', 'btn-secondary', 'dropdown-toggle', 'float-right');
+    cardQuantity.classList.add('btn', 'btn-secondary', 'dropdown-toggle');
     cardQuantity.type = 'button';
     cardQuantity.id = 'productQuantityDropdownButton';
     cardQuantity.dataset.toggle = 'dropdown';
@@ -192,16 +216,6 @@ function showProductCard(product, quantity) {
         cardQuantityValues.appendChild(cardQuantValue);
     });
 
-    const cardFooter = document.createElement('div');
-    cardFooter.classList.add('card-footer');
-
-    const removeProductButton = document.createElement('button');
-    removeProductButton.classList.add('btn', 'btn-link', 'float-left');
-    removeProductButton.textContent = 'Eliminar';
-    removeProductButton.onclick = () => {
-        this.removeProductFromQuotation(product.id);
-    };
-
     cardQuantityDropdown.appendChild(cardQuantity);
     cardQuantityDropdown.appendChild(cardQuantityValues);
 
@@ -217,7 +231,7 @@ function showProductCard(product, quantity) {
     card.appendChild(cardBody);
     card.appendChild(cardFooter);
 
-    div.appendChild(card);
+    // div.appendChild(card);
 
-    productList.appendChild(div);
+    productList.appendChild(card);
 }
