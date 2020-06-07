@@ -160,7 +160,7 @@ function showProductCard(product, quantity) {
     div.classList.add('col-sm-4', 'col-lg-3', 'py-2');
 
     const card = document.createElement('div');
-    card.classList.add('card', 'mb-4');
+    card.classList.add('card', 'mb-4', 'w-100');
     card.style.minWidth = '10rem';
 
     // const img = document.createElement('img');
