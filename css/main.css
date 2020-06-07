@@ -11,21 +11,6 @@
    Base styles: opinionated defaults
    ========================================================================== */
 
-html {
-    color: #ffffff;
-    font-size: 1em;
-    line-height: 1.4;
-}
-
-html body {
-    background-color: #222222;
-    color: #ffffff;
-}
-
-.jumbotron {
-    background-color: #131313 !important;
-}
-
 /*
  * Remove text-shadow in selection highlight:
  * https://twitter.com/miketaylr/status/12228805301
