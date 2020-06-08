@@ -48,7 +48,11 @@ fetch(`${API_URL}/categories`)
 
                     });
                     category.appendChild(ul);
-            })
+            }).catch(() => {
+                const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+                errorModalBody.textContent = 'Hubo un problema al obtener las categorías, por favor intente más tarde. ';
+                $('#errorModal').modal('show');
+            });
 
 
 }
