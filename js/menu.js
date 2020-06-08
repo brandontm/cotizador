@@ -5,7 +5,12 @@ fetch(`${API_URL}/products`)
 .then((products) => {
     productList = products;
 })
-.then(()=>showMenu());
+.then(()=>showMenu())
+.catch(() => {
+    const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
+    errorModalBody.textContent = 'Hubo un error obteniendo productos. Favor de intentar de nuevo.';
+    $('#errorModal').modal('show');
+});
 
 function showMenu(){
   //  const value = 1;
