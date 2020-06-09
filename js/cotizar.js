@@ -50,6 +50,10 @@ function showQuotationProducts() {
         const fetchData = async () => {
             productList.innerHTML = ''; // clean product list
 
+            // clean shipping values
+            productsWeight.value = '';
+            productsVolume.value = ''
+
             const ids = event.target.result.map((results) => {
                 registries.set(results.product_id, results.quantity);
 
@@ -73,7 +77,6 @@ function showQuotationProducts() {
                     let weight = 0;
                     let volume = 0;
 
-                    productList.innerHTML = ''; // clean product list
 
                     products.forEach((product) => {
                         volumePerUnit = (product.length * product.width * product.height);
