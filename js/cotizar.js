@@ -76,18 +76,19 @@ function showQuotationProducts() {
                     productList.innerHTML = ''; // clean product list
 
                     products.forEach((product) => {
-                        volumePerUnit = (product.length * product.width + product.height);
+                        volumePerUnit = (product.length * product.width * product.height);
                         const quantity = registries.get(product.id);
 
-                        weight += ((product.weight * quantity) / 1000);
-                        volume += (volumePerUnit * quantity);
+                        weight += (product.weight * quantity);
+                        volume += ((volumePerUnit) * quantity);
                         showProductCard(product, quantity)
                     });
 
-                    productsWeight.value = Math.round(weight * 10000) / 10000;
+                    weight = weight / 1000; // convert grams to kilograms
+                    productsWeight.value = Math.round(weight * 10000) / 10000; // round weight to 4 decimal places and display it
 
-                    // TODO: Show meters squared!
-                    productsVolume.value = Math.round(volume * 10000) / 10000;
+                    volume = volume / 1000000; // convert cm^3 to m^3
+                    productsVolume.value = Math.round(volume * 10000) / 10000; // round volume to 4 decimal places and display it
                 } else {
                     noProductsFound.hidden = false;
                 }
