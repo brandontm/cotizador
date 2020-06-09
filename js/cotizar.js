@@ -31,8 +31,6 @@ function loadDatabase() {
         // Create object store (table)
         const objectStore = db.createObjectStore('product', { keyPath: 'product_id' });
         objectStore.createIndex('quantity', 'quantity', { unique: false });
-
-        // TODO: show products
     };
 }
 
@@ -81,15 +79,16 @@ function showQuotationProducts() {
                         volumePerUnit = (product.length * product.width + product.height);
                         const quantity = registries.get(product.id);
 
-                        weight += ((product.weight * quantity) / 1000.0);
+                        weight += ((product.weight * quantity) / 1000);
                         volume += (volumePerUnit * quantity);
                         showProductCard(product, quantity)
                     });
 
                     productsWeight.value = Math.round(weight * 10000) / 10000;
+
+                    // TODO: Show meters squared!
                     productsVolume.value = Math.round(volume * 10000) / 10000;
                 } else {
-                    const noProductsFound = document.querySelector('#result > #noProductsFound');
                     noProductsFound.hidden = false;
                 }
             })
