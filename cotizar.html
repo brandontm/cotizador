@@ -43,7 +43,7 @@
                                     <h6>C&oacute;digo Postal</h6>
                                 </label>
                                 <input type="number" class="form-control" id="postalCode" placeholder="ej. 21015"
-                                    min="0" max="99999" step="1">
+                                    min="0" max="99999" step="1" required>
                             </div>
 
                             <div class=" form-group">
@@ -52,7 +52,7 @@
                                 </label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-right input-no-spin"
-                                        id="productsWeight" step="0.0001" readonly>
+                                        id="productsWeight" min="0" step="0.0001" required readonly>
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             kg
@@ -66,8 +66,8 @@
                                     <h6>Volumen</h6>
                                 </label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control text-right input-no-spin"
-                                        id="productsVolume" step="0.0001" readonly>
+                                    <input type="number" class="form-control text-right input-no-spin" min="0"
+                                        id="productsVolume" step="0.0001" required readonly>
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             m<sup>3</sup>
@@ -95,7 +95,7 @@
                     <div class="col justify-content-center" id="noProductsFound" hidden>
                         <div class="alert alert-warning" role="alert">
                             <p>No se encontraron productos en la cotización.&nbsp;<a href="index.html"
-                                    class="stretched-link">Volver al cat&aacute;logo</a></p>
+                                    class="stretched-link">Volver al cat&aacute;logo.</a></p>
                         </div>
                     </div>
 
@@ -107,12 +107,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+    <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    <h5 class="modal-title" id="defaultModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -122,6 +122,29 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="optionModal" tabindex="-1" role="dialog" aria-labelledby="optionModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="optionModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body"></div>
+
+                <div class="modal-footer">
+                    <button id="optionModalCancel" type="button" class="btn btn-link"
+                        data-dismiss="modal">Cancelar</button>
+                    <button id="optionModalAccept" type="button" class="btn btn-primary"
+                        data-dismiss="modal">Aceptar</button>
                 </div>
             </div>
         </div>

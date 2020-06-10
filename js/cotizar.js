@@ -1,8 +1,48 @@
 let db;
 const API_URL = 'https://itacate.herokuapp.com/api/v1';
 
+// state for user changing weight and/or volume
+let isCustomWeight = false;
+let isCustomVolume = false;
+
 window.onload = function () {
     this.loadDatabase();
+    productsWeight.onclick = (() => {
+        if (!isCustomWeight) {
+            const optionModalTitle = document.querySelector('#optionModal .modal-header > h5.modal-title');
+            const optionModalBody = document.querySelector('#optionModal .modal-content > div.modal-body');
+
+            optionModalTitle.textContent = 'Modificar peso';
+            optionModalBody.textContent = '¿Desea ingresar el peso manualmente?';
+
+            optionModalAccept.onclick = () => {
+
+                isCustomWeight = true;
+                productsWeight.readOnly = false;
+
+            }
+
+            $('#optionModal').modal('show');
+        }
+    });
+
+    productsVolume.onclick = (() => {
+        if (!isCustomVolume) {
+            const optionModalTitle = document.querySelector('#optionModal .modal-header > h5.modal-title');
+            const optionModalBody = document.querySelector('#optionModal .modal-content > div.modal-body');
+
+            optionModalTitle.textContent = 'Modificar volumen';
+            optionModalBody.textContent = '¿Desea ingresar el volumen manualmente?';
+
+            optionModalAccept.onclick = () => {
+                isCustomVolume = true;
+                productsVolume.readOnly = false;
+            }
+
+
+            $('#optionModal').modal('show');
+        }
+    });
 }
 
 function loadDatabase() {
@@ -11,9 +51,7 @@ function loadDatabase() {
     const request = window.indexedDB.open('cart_db', 1);
 
     request.onerror = () => {
-        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
-        errorModalBody.textContent = 'Hubo un error interno de la aplicación. Favor de intentar de nuevo.';
-        $('#errorModal').modal('show');
+        showModal('Error', 'Hubo un error interno de la aplicación. Favor de intentar de nuevo.');
 
         hideLoading();
     }
@@ -97,9 +135,7 @@ function showQuotationProducts() {
                 }
             })
             .catch(() => {
-                const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
-                errorModalBody.textContent = 'Hubo un error obteniendo productos. Favor de intentar de nuevo.';
-                $('#errorModal').modal('show');
+                showModal('Error', 'Hubo un error obteniendo productos. Favor de intentar de nuevo.');
 
                 hideLoading();
             });
@@ -120,9 +156,7 @@ function putQuotationProduct(productId, productQuantity) {
     };
 
     transaction.onerror = () => {
-        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
-        errorModalBody.textContent = 'Hubo un error al insertar producto a la cotización. Favor de intentar de nuevo.';
-        $('#errorModal').modal('show');
+        showModal('Error', 'Hubo un error al insertar producto a la cotización. Favor de intentar de nuevo.');
     };
 }
 
@@ -138,10 +172,18 @@ function removeProductFromQuotation(productId) {
     };
 
     transaction.onerror = () => {
-        const errorModalBody = document.querySelector('#errorModal .modal-content > div.modal-body');
-        errorModalBody.textContent = 'Hubo un error al intentar eliminar un producto de la cotización. Favor de intentar de nuevo.';
-        $('#errorModal').modal('show');
+        showModal('Error', 'Hubo un error al intentar eliminar un producto de la cotización. Favor de intentar de nuevo.');
     };
+}
+
+function showModal(title, message) {
+    const defaultModalTitle = document.querySelector('#defaultModal .modal-header > h5.modal-title');
+    const defaultModalBody = document.querySelector('#defaultModal .modal-content > div.modal-body');
+
+    defaultModalTitle.textContent = title;
+    defaultModalBody.textContent = message;
+
+    $('#defaultModal').modal('show');
 }
 
 function showLoading() {
