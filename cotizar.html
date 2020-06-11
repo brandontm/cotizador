@@ -1,9 +1,9 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js h-100" lang="es-MX">
 
 <head>
     <meta charset="utf-8">
-    <title>Cotizar</title>
+    <title>Cotizaci&oacute;n</title>
 
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,41 +12,106 @@
     <link rel="apple-touch-icon" href="icon.png">
 
     <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/main.css">
 
+
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <meta name="theme-color" content="#fafafa">
 </head>
 
-<body>
+<body class="bg-light h-100">
     <!--[if IE]>
-        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <p class=" browserupgrade">You are using an <strong>outdated</strong> browser. Please <a
+        href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
     <![endif]-->
-    <div class="container">
-        <div class="justify-content-center py-5" id="loading" hidden>
-            <div class="spinner-border" style="width: 8rem; height: 8rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <div class="col justify-content-center" id="noProductsFound" hidden>
-            <div class="alert alert-warning my-5" role="alert">
-                <p>No se encontraron productos en la cotización.&nbsp;<a href="index.html">Volver al
-                        cat&aacute;logo</a></p>
-            </div>
-        </div>
-        <div class="row" id="result">
+    <div style="min-height: 100%;" class="container pt-3 bg-white">
+        <div>
+            <div class="d-flex flex-column flex-md-row flex-wrap flex-md-nowrap">
+                <div
+                    class="order-md-2 flex-shrink-0 justify-content-end text-right h-100 ml-0 ml-md-3 mb-3 border rounded-lg shadow-sm p-2">
+                    <div>
+                        <h2>Datos de env&iacute;o</h2>
 
+                        <hr>
+
+                        <form>
+                            <div class="form-group">
+                                <label for="postalCode">
+                                    <h6>C&oacute;digo Postal</h6>
+                                </label>
+                                <input type="number" class="form-control" id="postalCode" placeholder="ej. 21015"
+                                    min="0" max="99999" step="1" required>
+                            </div>
+
+                            <div class=" form-group">
+                                <label for="productsWeight">
+                                    <h6>Peso</h6>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-right input-no-spin"
+                                        id="productsWeight" min="0" step="0.0001" required readonly>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            kg
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="productsVolume">
+                                    <h6>Volumen</h6>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-right input-no-spin" min="0"
+                                        id="productsVolume" step="0.0001" required readonly>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            m<sup>3</sup>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="submit" class="btn btn-primary mb-3" value="Cotizar">
+                        </form>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column flex-wrap flex-fill">
+                    <h1>Productos</h1>
+
+                    <hr class="mx-0">
+
+                    <div class="justify-content-center py-5 align-content-center" id="loading" hidden>
+                        <div class="spinner-border" style="width: 8rem; height: 8rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="col justify-content-center" id="noProductsFound" hidden>
+                        <div class="alert alert-warning" role="alert">
+                            <p>No se encontraron productos en la cotización.&nbsp;<a href="index.html"
+                                    class="stretched-link">Volver al cat&aacute;logo.</a></p>
+                        </div>
+                    </div>
+
+                    <div class="card-deck align-content-start" id="result">
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+    <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    <h5 class="modal-title" id="defaultModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -56,6 +121,29 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="optionModal" tabindex="-1" role="dialog" aria-labelledby="optionModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="optionModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body"></div>
+
+                <div class="modal-footer">
+                    <button id="optionModalCancel" type="button" class="btn btn-link"
+                        data-dismiss="modal">Cancelar</button>
+                    <button id="optionModalAccept" type="button" class="btn btn-primary"
+                        data-dismiss="modal">Aceptar</button>
                 </div>
             </div>
         </div>
